@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1 class="title">{{msg}}</h1>
+        <input type="text" v-model="msg">
+        <button @click="changeMsg">click me!</button>
+    </div>
+</body>
+</html>
+
+{
+    attrs: {
+        id: 'app'
+    },
+    children: [
+        {
+            attrs: {
+                class: 'title',
+                children: [
+                    {
+                        text: "{{msg}}",
+                        type: 2
+                    }
+                ]
+            },
+            parent: {...},
+            tag: 'h1',
+            type: 1
+        },
+        {
+            text: " ",
+            type: 3
+        },
+        {
+            attrs: {
+                type: 'text',
+                v-model: "msg",
+            },
+            children: [],
+            directives: [
+                {
+                    name: 'model',
+                    value: 'msg'
+                }
+            ],
+            events: {
+                input: {
+                    value: "if($event.target.composing)return;msg=$event.target.value"
+                }
+            },
+            parent: '...',
+            props: {
+                value: '(msg)',
+            },
+            tag: 'input',
+            type: 1
+        },
+        {
+            text: " ",
+            type: 3
+        },
+        {
+            attrs: {
+                @click: 'changeMsg'
+            },
+            children: [
+                {
+                    text: "click me!"
+                    type: 3
+                }
+            ],
+            events: {
+                click: 'changeMsg'
+            },
+            parent: '...',
+            tag: 'button',
+            type: 1
+        }
+    ],
+    parent: undefined,
+    tag: 'div',
+    type: 1
+}
