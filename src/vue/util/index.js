@@ -18,3 +18,5 @@ export const getType = data => {
 }
 
 export {nextTick} from './nextTick'
+
+

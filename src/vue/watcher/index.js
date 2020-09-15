@@ -9,7 +9,7 @@ export class Watcher {
     if (isRenderWatcher) {
       vm._watcher = this;
     }
-    vm.watchers.push(this);
+    vm._watchers.push(this);
     this.cb = cb;
     this.deps = [];
     this.depsId = [];

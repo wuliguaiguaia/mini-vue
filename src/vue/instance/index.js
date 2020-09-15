@@ -5,8 +5,6 @@ import { Watcher } from './../watcher/index';
 import { compile } from './../compile/index';
 import { patch } from './../vdom/patch';
 
-
-
 class Vue {
   constructor(options) {
     if (!options) return;
@@ -44,9 +42,9 @@ class Vue {
   mount(vm, options) {
     let { el, template } = options;
     if (el) {
-      template = el.outerHTML; // 如果el存在，取其outerHTML
+      template = document.querySelector(el).outerHTML; // 如果el存在，取其outerHTML
     }
-
+    console.log(template);
     let { render } = compile(template); // 获取 render 函数
     vm._render = render;
 
