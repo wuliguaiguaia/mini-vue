@@ -13,7 +13,7 @@ export const observe = (data) => {
       ob = new Observer(data);
     }
   }
-  return ob; 
+  return ob;     
 };
 
 class Observer {
