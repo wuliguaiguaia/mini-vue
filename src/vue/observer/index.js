@@ -4,7 +4,6 @@ import { getType } from "./../util/index";
 export const observe = (data) => {
   if (!data) return;
   let ob;
-  console.log(data);
   // 这里就只对object进行响应式
   if (getType(data) === "object") {
     // 通过是否有 __ob__ 属性判断是否已经响应式过
@@ -43,7 +42,7 @@ export const defineReactive = (obj, key) => {
             }
             return value
         },
-        set(newValue) { // 嵌套函数 this 会丢失
+        set (newValue) { // 嵌套函数 this 会丢失
             if (newValue === value) {
                 return;
             }

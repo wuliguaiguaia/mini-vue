@@ -3,9 +3,7 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint'
   },
-  globals: {
-    // '_': true,
-  },
+  globals: { },
   env: {
     browser: true,
   },

@@ -6,7 +6,6 @@ export const proxy = (vm, source, data) => {
             return item;
           },
           set(newVal) {
-              console.log(vm);
             vm[source][key] = newVal; 
           },
         });

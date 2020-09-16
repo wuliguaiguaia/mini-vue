@@ -6,10 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="app">
-        <h1 class="title">{{msg}}</h1>
-        <input type="text" v-model="msg">
+    <div id="app"><h1 class="title" :dddd="msg">{{msg}}</h1>
+        <input type="text" v-model.lazy="msg">
         <button @click="changeMsg">click me!</button>
-    </div>
+        <div v-for="(item, i) in ar" :key="i">1{{item}}2222</div></div>
 </body>
 </html>

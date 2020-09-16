@@ -1,4 +1,4 @@
-import { noDireKeys } from "constants/directives";
+import { noDireKeys, isUnaryTag, elSpecialAttr} from "constants/index";
 
 const isFirstElement = /^\s*</;
 const tagStart = /^<([a-z\-0-9]+)\s+([^>]+)\/?>/i;
@@ -18,39 +18,54 @@ const parseDirectivesUtils = {
             value: `${expr}=$event.target.value`
         }
     },
+
     on(element, val, expr, modifiers) {
-        let name = `&${val}`;
+        let name = `${val}`;
         element.events[name] = {
             value: expr,
             modifiers
         }
     },
+
     bind(element, val, expr, modifiers) {
-        if (['class', 'style'].includes(val)) return;
-        if (modifiers.sync) {
+        if (elSpecialAttr.includes(val)) {
+            element[val] = expr;
+        }
+        if (modifiers?.sync) {
             let name = `update:${val}`
             element.events[name] = {
                 value: `${expr}=$event`,
             }
         }
     },
+
     if(element, _, expr) {
         element.if = expr;
-        element.ifProcessed = true;
+        // if (!element.ifConditions) { // 一个元素节点会有多个if吗？
+        //     element.ifConditions = [];
+        // }
+        element.ifCondition = { 
+            exp: expr,
+            block: element
+        }
     },
     
     for(element, _, expr) {
-        element.forProcessed = true;
         if (forExpr.exec(expr)) {
             element.forCondition = RegExp.$1;
             element.for = RegExp.$2;
+            let [alias, iterator] = RegExp.$1.split(",");
+            element.alias = alias.trim().replace('(', '');
+            element.iterator = iterator?.trim().replace(')', '');
         }
-    }
+    },
+
+    // once
 };
 
 const parseDirectives = (element, keyStr, argStr, expr) => {
     let [dire, ...dirModifiers] = keyStr.split(".");
-    let [arg, ...argMofifiers] = argStr && argStr.split('.') || [];
+    let [arg, ...argMofifiers] = argStr?.split('.') ?? [];
     let modifiers = [...dirModifiers, ...argMofifiers].reduce((res, item) => { // 会同时出现吗？
         res[item] = true;
         return res;
@@ -76,6 +91,8 @@ const parseDirectives = (element, keyStr, argStr, expr) => {
     if (!noDireKeys.includes(dire)) {
         element.directives.push(direItem);
     }
+
+    element.hasBindings = true; // 动态绑定
 }
 
 const parseAttrs = (element, str) => {
@@ -91,8 +108,12 @@ const parseAttrs = (element, str) => {
                 parseDirectives(element, 'on', key.slice(1), val); // on, click.passive, change
             } else if (key.startsWith(":")) {
                 parseDirectives(element, 'bind', key.slice(1), val); // bind, data.sync, 
-            } else {
-
+            } else if (elSpecialAttr.includes(key)) {
+                if(key === 'class') {
+                    element.staticClass = val
+                } else {
+                    element[key] = val;
+                }
             }
         } else {
             element.attrs[match] = true;
@@ -113,10 +134,11 @@ const parseStartTag = (matches) => {
     } else {
         root = element;
     }
-    if (!matches[0].endsWith('/>')) { // 自闭合标签不入栈
+
+    if (!isUnaryTag.includes(element.tag)) { //自闭合标签不入栈
         currentParent = element;
         stack.push(element);
-    } 
+    }
 
     const attrStr = matches[2];
     if (attrStr) parseAttrs(element, attrStr.trim());
@@ -124,9 +146,11 @@ const parseStartTag = (matches) => {
 
 const parseEndTag = (matches) => {
   let endTag = matches[1];
+  
   for(let len = stack.length, i = len - 1; i < len; i--){
     let element = stack[i];
     if (element.tag.toLowerCase() !== endTag.toLowerCase()) {
+      element.parent.children.push
       stack.pop();
     } else {
       currentParent = stack.pop().parent;
