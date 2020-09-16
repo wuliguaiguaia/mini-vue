@@ -1,34 +1,34 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/main.js",
+  mode: 'development',
+  entry: './src/main.js',
   output: {
-    filename: "[name].[hash].js",
+    filename: '[name].[hash].js'
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.json'],
     alias: {
-      'constants': path.join(__dirname,'./src/vue/constants/')
+      constants: path.join(__dirname, './src/vue/constants/')
     }
   },
-  devtool: "eval-cheap-source-map",
+  devtool: 'eval-cheap-source-map',
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: ['babel-loader?cacheDirectory']
+        use: ['babel-loader?cacheDirectory', 'eslint-loader']
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "index.html",
-      inject: true,
-    }),
+      filename: 'index.html',
+      template: 'index.html',
+      inject: true
+    })
     // new CleanWebpackPlugin()
   ]
 };
