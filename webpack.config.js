@@ -30,5 +30,5 @@ module.exports = {
       inject: true,
     }),
     // new CleanWebpackPlugin()
-  ],
+  ]
 };
