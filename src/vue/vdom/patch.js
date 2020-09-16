@@ -1,1 +1,1 @@
-export const patch = () => {}
+export const patch = () => {};

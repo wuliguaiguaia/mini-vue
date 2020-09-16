@@ -1,10 +1,10 @@
-import { Dep } from "../dep";
+import { Dep } from '../dep';
 import { queueWatcher } from './syncUpdate';
 
 let uid = 0;
 
 export class Watcher {
-  constructor(vm, cb, isRenderWatcher) {
+  constructor (vm, cb, isRenderWatcher) {
     this.id = uid++;
     if (isRenderWatcher) {
       vm._watcher = this;
@@ -19,7 +19,7 @@ export class Watcher {
     Dep.target = null; // 该watcher收集依赖使命结束
   }
 
-  addDep(dep) {
+  addDep (dep) {
     if (!this.depsId.includes(dep.id)) {
       // 防止重复
       this.depsId.push(dep.id);
@@ -28,11 +28,11 @@ export class Watcher {
     }
   }
 
-  update() {
+  update () {
     queueWatcher(this);
   }
 
-  run() {
+  run () {
     this.cb();
   }
 }

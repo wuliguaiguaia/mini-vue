@@ -8,7 +8,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "**/*.js": "eslint --ext .js"
+    "**/*.js": "eslint --ext .js --fix"
   },
   "husky": {
     "hooks": {
@@ -44,6 +44,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "html-webpack-plugin": "^4.4.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.3.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

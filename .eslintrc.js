@@ -5,7 +5,7 @@ module.exports = {
   },
   globals: { },
   env: {
-    browser: true,
+    browser: true
   },
   extends: [
     'standard'
@@ -13,8 +13,10 @@ module.exports = {
   rules: {
     'generator-star-spacing': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    "semi": [2, "always"],
-    'operator-linebreak': [2, 'before'],
-    'no-multiple-empty-lines': 1,
+    semi: ['error', 'always'],
+    'operator-linebreak': ['error', 'before'],
+    'no-multiple-empty-lines': 'error',
+    'no-prototype-builtins': 'off',
+    'no-cond-assign': 'off'
   }
-}
+};

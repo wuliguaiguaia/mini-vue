@@ -1,4 +1,4 @@
-let cbs = [];
+const cbs = [];
 let pending = false;
 
 export const nextTick = (cb) => {
@@ -11,7 +11,7 @@ export const nextTick = (cb) => {
       pending = false;
       const curCbs = cbs.slice();
       cbs.length = 0; // 清空
-      cbs.forEach((fn) => {
+      curCbs.forEach((fn) => {
         fn();
       });
     });
