@@ -17,6 +17,7 @@ module.exports = {
     'operator-linebreak': ['error', 'before'],
     'no-multiple-empty-lines': 'error',
     'no-prototype-builtins': 'off',
-    'no-cond-assign': 'off'
+    'no-cond-assign': 'off',
+    'no-proto': 'off'
   }
 };
