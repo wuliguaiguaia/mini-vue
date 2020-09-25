@@ -17,3 +17,16 @@ export const getType = data => {
 };
 
 export { nextTick } from './nextTick';
+
+export const initUse = Vue => {
+  Vue.use = function (plugin, ...args) {
+    const installedPlugins = Vue.prototype.installedPlugins || (Vue.prototype.installedPlugins = []);
+    if (installedPlugins.indexOf(plugin) > -1) {
+      return plugin;
+    }
+    installedPlugins.push(plugin);
+
+    args.unshift(Vue);
+    plugin.install.apply(plugin, args);
+  };
+};

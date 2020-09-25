@@ -1,4 +1,9 @@
 import Vue from './vue';
+import { someplugin } from './../test/plugin';
+
+Vue.use(someplugin, { lazy: true });
+Vue.use(someplugin, { lazy: true });
+
 const vm = new Vue({
   el: '#app',
   data: {

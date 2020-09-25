@@ -28,7 +28,7 @@ class Observer {
     });
 
     if (Array.isArray(data)) {
-      data.__proto__ = arrayMethods;
+      data.__proto__ = arrayMethods; // 直接修改了数组的__proto__?
       this.observeArray(data);
     } else {
       this.walk(data); // 开始监听
