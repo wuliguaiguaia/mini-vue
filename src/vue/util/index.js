@@ -1,11 +1,10 @@
 export const proxy = (vm, source, data) => {
   Object.keys(data).forEach(key => {
-    const item = data[key];
     Object.defineProperty(vm, key, {
       get () {
-        return item;
+        return vm[source][key];
       },
-      set (newVal) {
+      set(newVal) {
         vm[source][key] = newVal;
       }
     });

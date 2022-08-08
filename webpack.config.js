@@ -19,9 +19,13 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: ['babel-loader?cacheDirectory', 'eslint-loader']
+        use: ['babel-loader?cacheDirectory']
       }
     ]
+  },
+  devServer: {
+    port: 8080,
+    open: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

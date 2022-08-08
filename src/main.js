@@ -1,6 +1,7 @@
 import Vue from './vue';
 import { someplugin } from './../test/plugin';
 
+// require('../test/index.js')
 Vue.use(someplugin, { lazy: true });
 Vue.use(someplugin, { lazy: true });
 
@@ -11,12 +12,11 @@ const vm = new Vue({
     count: 0
   },
   methods: {
-    changeMsg () {
-      this.msg = this.msg + this.count++;
+    changeCount () {
+      console.log(this, 'oooo')
+      this.count++;
     }
   }
 });
 
-console.log(vm.msg);
-vm.msg = { d: 4 };
-console.log(vm.$data.msg);
+console.log('vm',vm);

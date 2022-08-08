@@ -1,12 +1,12 @@
 import { noDireKeys, isUnaryTag, elSpecialAttr } from 'constants/index';
 
 const isFirstElement = /^\s*</;
-const tagStart = /^<([a-z\-0-9]+)\s+([^>]+)\/?>/i;
-const tagEnd = /^<\/([a-z\-0-9]+)>/i;
+const tagStart = /^<([a-z0-9]+)\s*([^>]*)\/?>/i;
+const tagEnd = /^<\/([a-z0-9]+)>/i;
 const text = /[^<>]+/;
-const expr = /\{\{([\w\\.]+)\}\}/g;
+const expr = /\{\{([\w\.]+)\}\}/g;
 const forExpr = /(.*)\s+(?:in|of)\s+(.*)/;
-const attrRE = /([^'"=\\(\\)]+)\s*(\\=\s*["']?([^"']+)["']?)?\/?/g;
+const attrRE = /([^'"=\(\)]+)\s*(=\s*["']?([^"']+)["']?)?\/?/g;
 
 const stack = [];
 let root;
@@ -141,16 +141,16 @@ const parseStartTag = (matches) => {
   }
 
   const attrStr = matches[2];
+  console.log(99, matches);
   if (attrStr) parseAttrs(element, attrStr.trim());
 };
 
 const parseEndTag = (matches) => {
   const endTag = matches[1];
-
-  for (let len = stack.length, i = len - 1; i < len; i--) {
+  for (let len = stack.length, i = len - 1; i >= 0; i--) {
     const element = stack[i];
     if (element.tag.toLowerCase() !== endTag.toLowerCase()) {
-      element.parent.children.push(stack.pop());
+      stack.pop();
     } else {
       currentParent = stack.pop().parent;
       return;
@@ -169,9 +169,9 @@ const parseText = (matches) => {
   }
   if (expr.test(matches[0])) {
     textNode.type = 2;
-    textNode.expression = '"' + matches[0].replace(expr, (_, $1) => {
-      return `"+_s(${$1})+"`;
-    }) + '"';
+    textNode.expression = "'" + matches[0].replace(expr, (_, $1) => {
+      return `'+_s(${$1})+'`;
+    }) + "'";
   }
 };
 

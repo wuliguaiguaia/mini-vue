@@ -1,7 +1,7 @@
 import { elSpecialAttr } from 'constants/index';
 
 const genUtil = {
-  element (el, state) {
+  element(el, state) {
     if (el.staticRoot && !el.staticProcessed) { // 静态根节点
       return this.static(el, state);
     } else if (el.for && !el.forProcessed) { // for 在 if前
@@ -11,16 +11,16 @@ const genUtil = {
     } else {
       const data = this._data(el, state);
       const children = this.children(el, state);
-      return `_c('${el.tag}', ${data}, ${children})`;
+      return `_c('${el.tag}', ${data}, ${children}, ${el.static})`;
     }
   },
-  static (el, state) {
+  static(el, state) {
     el.staticProcessed = true;
-    state.staticRenderFns.push(`with(this){return ${this.element(el, state)}}`); // ?
-    return `_m(${state.staticRenderFns.length - 1})`; // ?
+    state.staticRenderFns.push(`with(this){return ${this.element(el, state)}}`);
+    return `_m(${state.staticRenderFns.length - 1})`; // renderStatic
   },
 
-  for (el, state) {
+  for(el, state) {
     el.forProcessed = true;
     const { alias, iterator } = el;
     return `_l(${el.for}, function(${alias}, ${iterator}) {
@@ -28,7 +28,7 @@ const genUtil = {
         })`;
   },
 
-  if (el, state) {
+  if(el, state) {
     el.ifProcessed = true;
     let code;
     const { exp, block } = el.ifCondition;
@@ -40,14 +40,14 @@ const genUtil = {
     return code;
   },
 
-  children (el, state) {
+  children(el, state) {
     const { children } = el;
     if (children?.length) {
       return `[${children.map(c => this.vnode(c, state)).join(',')}]`;
     }
   },
 
-  vnode (node, state) {
+  vnode(node, state) {
     if (node.type === 1) {
       return this.element(node, state);
     } else {
@@ -55,12 +55,12 @@ const genUtil = {
     }
   },
 
-  text (node) {
+  text(node) {
     const { type, text } = node;
-    return `_v(${type === 2 ? node.expression : JSON.stringify(text)})`; // JSON.stringify 防止意外
+    return `_v(${type === 2 ? node.expression : JSON.stringify(text)}, ${node.static})`; // JSON.stringify 防止意外
   },
 
-  _data (el, state) {
+  _data(el, state) {
     const { attrs, directives, events, key, staticClass } = el;
     let code = '';
     if (Object.keys(attrs).length) {
@@ -71,7 +71,7 @@ const genUtil = {
           if (!elSpecialAttr.includes(name.slice(1))) {
             domProps += `${name.slice(1)}:${val}`;
           }
-        } else if (name === 'v-model') {
+        } else if (name.includes('v-model')) {
           domProps += `value:(${val})`;
         } else if (!/v-|@/.test(name) && !elSpecialAttr.includes(name)) {
           attrCode += `${name}:"${val}",`;
@@ -120,7 +120,7 @@ const genUtil = {
 };
 
 export class CodegenState {
-  constructor () {
+  constructor() {
     this.staticRenderFns = [];
   }
 }
@@ -128,7 +128,41 @@ export class CodegenState {
 export const generate = ast => {
   const state = new CodegenState();
   const code = ast ? genUtil.element(ast, state) : '_c("div")';
+  console.log(code);
   return { // with 改变作用域
-    render: function () {} || `with(this){ return ${code}}`
+    render: new Function(`with(this){ return ${code}}`)
   };
 };
+
+
+// _c('div',
+//   { attrs: { id: "app", }, },
+//   [
+//     _v("\n    ", true),
+//     _c('h1',
+//       { staticClass: "title" },
+//       [
+//         _v("" + _s(msg) + "", false)
+//       ],
+//       false),
+//     _v("\n    ", true),
+//     _c('input',
+//       {
+//         attrs: { type: "text", },
+//         domProps: { value: (count) },
+//         directives: [{ "name": "model", "value": "count", "modifiers": { "lazy": true } }],
+//         on: { change: function ($event) { count = $event.target.value }, },
+//       },
+//       undefined,
+//       false),
+//     _v("\n    ", true),
+//     _c('button',
+//       { on: { click: changeCount, }, },
+//       [
+//         _v("click me!", true)
+//       ],
+//       false),
+//     _v("\n  ", true)
+//   ],
+//   false
+// )

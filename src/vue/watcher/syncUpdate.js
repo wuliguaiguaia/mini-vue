@@ -15,7 +15,7 @@ function flushSchedulerQueue () {
 }
 
 export const queueWatcher = (watcher) => {
-  if (!has(watcher.id)) {
+  if (!has[watcher.id]) {
     has[watcher.id] = true;
     queue.push(watcher);
   }
